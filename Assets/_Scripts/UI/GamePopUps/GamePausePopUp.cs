@@ -92,7 +92,9 @@ public class GamePausePopUp : GamePopUp
 
     private void RestartGame()
     {
-
+        gameData.restartGame = true;
+        popUpAnim.StopAllAnimations();
+        SceneManager.LoadScene("Gameplay");
     }
 
     #endregion

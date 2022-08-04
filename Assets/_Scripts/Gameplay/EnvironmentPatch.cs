@@ -35,7 +35,8 @@ public class EnvironmentPatch : MonoBehaviour
 
     public void Init(GameStage _stageInfo, bool _canSpawnEnemies = true)
     {
-        platforms = new List<Platform>();
+        ResetPatch();
+
         currentStageInfo = _stageInfo;
         layer1.sprite = _stageInfo.layerOne;
         layer2.sprite = _stageInfo.layerTwo;
@@ -45,19 +46,25 @@ public class EnvironmentPatch : MonoBehaviour
         SetUpPatch();
     }
 
+    #endregion
+
+    #region Private Methods
+
+
     public void ResetPatch()
     {
-        foreach(Platform platform in platforms)
+        if(platforms == null)
         {
-            platform.ResetPlatForm();
+            platforms = new List<Platform>();
+            return;
+        }
+
+        foreach (Platform platform in platforms)
+        {
             PoolManager.Instance.ReturnToPool("Platform", platform.gameObject);
         }
         platforms.Clear();
     }
-
-    #endregion
-
-    #region Private Methods
 
     private void SetUpPatch()
     {
@@ -101,9 +108,11 @@ public class EnvironmentPatch : MonoBehaviour
         float _platformXPos = Random.Range(xMinMax.x, xMinMax.y);
 
         platforms.Add(PoolManager.Instance.GetFromPool("Platform").GetComponent<Platform>());
+        platforms[platforms.Count - 1].ResetPlatForm();
+
         platforms[platforms.Count - 1].State = Random.Range(0, 2) == 1 ? PlatformType.SINGLE  : PlatformType.DOUBLE;
         platforms[platforms.Count - 1].Coins = Random.Range(0, 2) == 1 && _canHaveCoins ? Element.CONTAIN : Element.IDLE;
-        platforms[platforms.Count - 1].transform.position = new Vector2(_platformXPos, _platformYPos);
+        platforms[platforms.Count - 1].transform.position = new Vector3(_platformXPos, _platformYPos, 0) + transform.position;
         platforms[platforms.Count - 1].DisplaySprite = currentStageInfo.platform;
         platforms[platforms.Count - 1].transform.parent = transform;
     }

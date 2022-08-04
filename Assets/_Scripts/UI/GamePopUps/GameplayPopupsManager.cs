@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class GameplayPopupsManager : MonoBehaviour
@@ -8,6 +9,7 @@ public class GameplayPopupsManager : MonoBehaviour
     #region Public Attributes
 
     public GameObject BG;
+    public TMP_Text gameScoresText;
 
     [Header("Game PopUps")]
     public GamePopUp stageSelectionPopUp;
@@ -46,7 +48,7 @@ public class GameplayPopupsManager : MonoBehaviour
         gamePopUpList.Add(settingsPopUp);
         gamePopUpList.Add(gamePausePopUp);
 
-        ShowStageSelectionScreen();
+        gameScoresText.text = _gameData.gameEarnedScores.ToString();
     }
 
     #endregion
@@ -64,6 +66,7 @@ public class GameplayPopupsManager : MonoBehaviour
         EnablePopUp(caharacterSelectionPopUp);
         caharacterSelectionPopUp.SetAction( () =>
         {
+            gameScoresText.transform.parent.gameObject.SetActive(false);
             caharacterSelectionPopUp.Hide(); gameplayUiManager.StartGame();
             DOVirtual.DelayedCall(0.25f, delegate { EnablePopUp(null); });
         });

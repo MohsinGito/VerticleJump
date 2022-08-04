@@ -11,7 +11,12 @@ public class GameplayUIScreen : MonoBehaviour
     public ZoomInOutPopUp uiAnim;
     public TMP_Text scoresText;
     public Button pauseButton;
-    
+
+    #endregion
+
+    #region Private Attributes
+
+    private int scoresLeftToAdd;
     private GameData gameData;
     private GameplayPopupsManager popupsManager;
 
@@ -24,7 +29,10 @@ public class GameplayUIScreen : MonoBehaviour
         gameData = _gameData;
         popupsManager = _popupsManager;
 
+        gameData.sessionScores = 0;
+        scoresText.text = gameData.sessionScores.ToString();
         pauseButton.onClick.AddListener(popupsManager.ShowPauseScreen);
+
         UpdateScoresUI();
     }
 
@@ -38,6 +46,16 @@ public class GameplayUIScreen : MonoBehaviour
         uiAnim.Animate(false);
     }
 
+    public void IncrementBoostScores()
+    {
+        scoresLeftToAdd += gameData.scoresBoost;
+    }
+
+    public void IncrementCoinScores()
+    {
+        scoresLeftToAdd += gameData.coinsScores;
+    }
+
     private void UpdateScoresUI()
     {
         StartCoroutine(UpdateUI());
@@ -45,7 +63,12 @@ public class GameplayUIScreen : MonoBehaviour
         {
             while(true)
             {
-                scoresText.text = gameData.sessionScores.ToString();
+                if(scoresLeftToAdd > 0)
+                {
+                    scoresLeftToAdd -= 1;
+                    gameData.sessionScores += 1;
+                    scoresText.text = gameData.sessionScores.ToString();
+                }
                 yield return null;  
             }
         }

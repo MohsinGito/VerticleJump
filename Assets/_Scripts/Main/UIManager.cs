@@ -28,11 +28,24 @@ public class UIManager : MonoBehaviour
         gameData = _gameData;
         gameManager = _gameManager;
 
+        if(gameData.restartGame)
+        {
+            laodingScreen.gameObject.SetActive(false);
+            popupsManager.Init(gameData, this);
+            gameplayUiScreen.Init(gameData, popupsManager);
+            gameData.restartGame = false;
+            StartGame();
+
+            return;
+        }
+
         if (gameData.gameInitialized)
         {
             laodingScreen.gameObject.SetActive(false);
             popupsManager.Init(gameData, this);
             gameplayUiScreen.Init(gameData, popupsManager);
+
+            popupsManager.ShowStageSelectionScreen();
         }
         else
         {
@@ -41,8 +54,18 @@ public class UIManager : MonoBehaviour
                 popupsManager.Init(gameData, this);
                 gameplayUiScreen.Init(gameData, popupsManager);
 
+                popupsManager.ShowStageSelectionScreen();
+
             }, gameData);
         }
+    }
+
+    public void AddRewardScores(bool _coinReward = false)
+    {
+        if (_coinReward)
+            gameplayUiScreen.IncrementCoinScores();
+        else
+            gameplayUiScreen.IncrementBoostScores();
     }
 
     public void StartGame()

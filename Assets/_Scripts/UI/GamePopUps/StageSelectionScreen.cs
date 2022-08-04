@@ -61,7 +61,7 @@ public class StageSelectionScreen : GamePopUp
         for (int i = 0; i < gameData.gameStages.Count; i++)
         {
             itemsList.Add(new StageItem(Instantiate(uiPrefab, listParent).GetComponent<RectTransform>()));
-            itemsList[i].SetUpStage(i, gameData.gameStages[i].stageUISprite, gameData.gameStages[i].stageName, StageSelected);
+            itemsList[i].SetUpStage(i, gameData.gameStages[i], StageSelected);
         }
     }
 
@@ -80,6 +80,7 @@ public struct StageItem
     public RectTransform parent;
     public Image displayImage;
     public TMP_Text displayText;
+    public TMP_Text infoText;
     public Button onClickBtn;
 
     public StageItem(RectTransform _parent)
@@ -88,14 +89,18 @@ public struct StageItem
 
         displayImage = parent.GetChild(0).GetComponent<Image>();
         displayText = parent.GetChild(1).GetComponent<TMP_Text>();
-        onClickBtn = parent.GetChild(2).GetComponent<Button>();
+        infoText = parent.GetChild(2).GetComponent<TMP_Text>();
+        onClickBtn = parent.GetChild(3).GetComponent<Button>();
     }
 
-    public void SetUpStage(int _stageIndex, Sprite _displaySprite, string _displayText, ButtonEvent _onClickEvent)
+    public void SetUpStage(int _stageIndex, GameStage _stageInfo, ButtonEvent _onClickEvent)
     {
-        displayText.text = _displayText;
-        displayImage.sprite = _displaySprite;
+        displayText.text = _stageInfo.stageName;
+        displayImage.sprite = _stageInfo.stageUISprite;
+        onClickBtn.interactable = _stageInfo.unLocked;
+        infoText.gameObject.SetActive(!_stageInfo.unLocked);
         onClickBtn.onClick.AddListener(delegate { _onClickEvent(_stageIndex); });
+        infoText.text = "Reach Up To " + _stageInfo.scoresCriteria + " Scores To Unlock This Stage!";
     }
 
 }

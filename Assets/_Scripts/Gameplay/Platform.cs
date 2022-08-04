@@ -48,7 +48,6 @@ public class Platform : MonoBehaviour
     {
         set
         {
-            ResetPlatForm();
             currentType = value;
             switch (currentType)
             {
@@ -123,10 +122,16 @@ public class Platform : MonoBehaviour
     public void ResetPlatForm()
     {
         foreach (PoolObj obj in enemySpawned)
+        {
+            obj.Prefab.transform.position = Vector3.zero;
             PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
+        }
 
         foreach (PoolObj obj in coinsSpawned)
+        {
+            obj.Prefab.transform.position = Vector3.zero;
             PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
+        }
 
         enemySpawned.Clear();
         coinsSpawned.Clear();

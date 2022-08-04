@@ -63,7 +63,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 if(item.Value.Count == 0)
                 {
-                    getOject = Instantiate(GetPrefabFromPoolsRecord(poolTag), GetParentForPool(poolTag));
+                    getOject = Instantiate(poolRecords[poolTag].Prefab, poolRecords[poolTag].PoolParent);
                 }
                 else
                 {
@@ -83,6 +83,7 @@ public class ObjectPooler : MonoBehaviour
             return false;
 
         objectToReturn.SetActive(false);
+        objectToReturn.transform.parent = poolRecords[poolTag].PoolParent;
         PoolList[poolTag].Enqueue(objectToReturn);
         return true;
     }
@@ -97,7 +98,7 @@ public class ObjectPooler : MonoBehaviour
             Destroy(obj);
         }
 
-        Destroy(GetParentForPool(poolTag).gameObject);
+        Destroy(poolRecords[poolTag].PoolParent.gameObject);
         PoolList.Remove(poolTag);
         return true;
     }
@@ -133,16 +134,6 @@ public class ObjectPooler : MonoBehaviour
         {
             if (record.Key.Equals(tag))
                 return record.Value.PoolParent;
-        }
-        return null;
-    }
-
-    private GameObject GetPrefabFromPoolsRecord(string tag)
-    {
-        foreach (KeyValuePair<string, PoolRecord> record in poolRecords)
-        {
-            if (record.Key.Equals(tag))
-                return record.Value.Prefab;
         }
         return null;
     }

@@ -21,17 +21,21 @@ public class EnvironmentManager : MonoBehaviour
 
     #region Private Attributes
 
+    private bool isFirstPatch;
     private float currentRepositionYPos;
     private GameStage currentStageInfo;
     private Vector3 nextPositionForRepositioning;
-    private List<EnvironmentPatch> environmentPatches;
+
+    private UIManager uiManager;
+    [SerializeField] private List<EnvironmentPatch> environmentPatches;
 
     #endregion
 
     #region Public Methods
 
-    public void Init(GameStage _stageInfo)
+    public void Init(GameStage _stageInfo, UIManager _uiManager)
     {
+        uiManager = _uiManager; 
         currentStageInfo = _stageInfo;
         ground.sprite = _stageInfo.groundSprite;
         leftBg.color = _stageInfo.backgroundColor;
@@ -40,6 +44,7 @@ public class EnvironmentManager : MonoBehaviour
         nextPositionForRepositioning = Vector3.zero;
         environmentPatches = new List<EnvironmentPatch>();
 
+        isFirstPatch = true;
         leftBg.gameObject.SetActive(true);
         rightBg.gameObject.SetActive(true);
 
@@ -55,30 +60,36 @@ public class EnvironmentManager : MonoBehaviour
     public void SpawnNewPatch(bool canSpawnEnemies = true)
     {
         environmentPatches.Add(PoolManager.Instance.GetFromPool("Environment Patch").GetComponent<EnvironmentPatch>());
-        environmentPatches[environmentPatches.Count - 1].Init(currentStageInfo, canSpawnEnemies);
 
         if (environmentPatches.Count > 1)
         {
             environmentPatches[environmentPatches.Count - 1].transform.position =
                 environmentPatches[environmentPatches.Count - 2].nextPatchPos.position;
         }
+
+        environmentPatches[environmentPatches.Count - 1].Init(currentStageInfo, canSpawnEnemies);
     }
 
     public void RepositionEnvironment()
     {
+        uiManager.AddRewardScores();
         nextPositionForRepositioning += transform.position + new Vector3(0, respositionFactor);
         repositionEnv.DOMove(nextPositionForRepositioning, respositionSpeed);
+    }
 
-        if(repositionEnv.position.y >= currentRepositionYPos)
+    public void RemoveAndSpawnNewPatch()
+    {
+        if(isFirstPatch)
         {
-            environmentPatches[0].ResetPatch();
-            environmentPatches[0].gameObject.SetActive(false);
-           // PoolManager.Instance.ReturnToPool("Environment Patch", environmentPatches[0].gameObject);
-            environmentPatches.RemoveAt(0);
-            currentRepositionYPos += newEnvSpawnYPos;
-
-            SpawnNewPatch();
+            isFirstPatch = false;
+            return;
         }
+        environmentPatches[0].gameObject.SetActive(false);
+        PoolManager.Instance.ReturnToPool("Environment Patch", environmentPatches[0].gameObject);
+        environmentPatches.RemoveAt(0);
+        currentRepositionYPos += newEnvSpawnYPos;
+
+        SpawnNewPatch();
     }
 
     #endregion

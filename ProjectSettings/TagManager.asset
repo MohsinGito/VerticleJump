@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Coin
   - Death Tag
+  - DeadEnd
+  - FxTemporaire
+  - Environment Patch
   layers:
   - Default
   - TransparentFX

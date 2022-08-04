@@ -11,6 +11,7 @@ public class CharacterSelectionPopUp : GamePopUp
     public ZoomInOutPopUp popUpAnim;
     public Image displayImage;
     public TMP_Text displayName;
+    public TMP_Text infoText;
     public Button leftArrowButton;
     public Button rightArrowButton;
     public Button selectCharacterButton;
@@ -80,6 +81,10 @@ public class CharacterSelectionPopUp : GamePopUp
     {
         displayName.text = gameData.gameCharacters[currentCharacterIndex].characterName;
         displayImage.sprite = gameData.gameCharacters[currentCharacterIndex].idleSprite;
+        displayImage.color = gameData.gameCharacters[currentCharacterIndex].unLocked ? Color.white : Color.black;
+        selectCharacterButton.interactable = gameData.gameCharacters[currentCharacterIndex].unLocked;
+        infoText.gameObject.SetActive(!gameData.gameCharacters[currentCharacterIndex].unLocked);
+        infoText.text = "Reach Up To " + gameData.gameCharacters[currentCharacterIndex].scoresCriteria + " Scores To Unlock This Character!";
     }
 
     private void SelectCharacter()

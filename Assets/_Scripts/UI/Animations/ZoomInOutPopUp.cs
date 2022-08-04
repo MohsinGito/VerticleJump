@@ -99,11 +99,15 @@ public class ZoomInOutPopUp : ZoomBehaviour
         if (animCoroutine != null)
             StopCoroutine(animCoroutine);
 
-        if (m_CanvasGroup != null) m_CanvasGroup.DOKill();
-        if (m_RectTransfrom != null) m_RectTransfrom.DOKill();
+        StopAllAnimations();
     }
 
     private void OnDisable()
+    {
+        StopAllAnimations();
+    }
+
+    public void StopAllAnimations()
     {
         if (m_CanvasGroup != null) m_CanvasGroup.DOKill();
         if (m_RectTransfrom != null) m_RectTransfrom.DOKill();

@@ -8,10 +8,13 @@ public class GameData : ScriptableObject
     #region Main Attributes
 
     public bool testBuild;
+    public bool restartGame;
 
     [Header("-- In Game Data --")]
+    public int scoresBoost;
+    public int coinsScores;
     public int sessionScores;
-    public int gameHighScores;
+    public int gameEarnedScores;
     public List<GameStage> gameStages;
     public List<GameCharacter> gameCharacters;
     public List<GameEnemy> gameFlyingEnemies;
@@ -28,10 +31,23 @@ public class GameData : ScriptableObject
 
     #endregion
 
+    #region Main Methods
+
+    public void CheckGameUnlockedElements()
+    {
+        for (int i = 0; i < gameStages.Count; i++)
+            gameStages[i].unLocked = gameEarnedScores > gameStages[i].scoresCriteria;
+
+        for (int i = 0; i < gameCharacters.Count; i++)
+            gameCharacters[i].unLocked = gameEarnedScores > gameCharacters[i].scoresCriteria;
+    }
+
+    #endregion
+
 }
 
 [System.Serializable]
-public struct GameStage
+public class GameStage
 {
     public string stageName;
     public Sprite platform;
@@ -41,15 +57,19 @@ public struct GameStage
     public Sprite groundSprite;
     public Sprite stageUISprite;
     public Color backgroundColor;
+    public bool unLocked;
+    public int scoresCriteria;
 }
 
 [System.Serializable]
-public struct GameCharacter
+public class GameCharacter
 {
     public string characterName;
     public Sprite idleSprite;
     public Sprite jumpSprite;
     public Sprite dieSprite;
+    public bool unLocked;
+    public int scoresCriteria;
 }
 
 [System.Serializable]

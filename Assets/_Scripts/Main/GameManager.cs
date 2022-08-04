@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        gameData.CheckGameUnlockedElements();
+
         // Setting Up Game Volume First
         if (!gameData.gameInitialized)
         {
@@ -36,24 +38,13 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        StartCoroutine("IncreaseScores");
-        environmentManager.Init(gameData.selectedStage);
+        environmentManager.Init(gameData.selectedStage, gameplayUiManager);
         playerController.Init(gameData.selectedCharacter, gameplayUiManager, environmentManager);
     } 
 
     public void EndGame()
     {
-        StopCoroutine("IncreaseScores");
-    }
-
-    IEnumerator IncreaseScores()
-    {
-        gameData.sessionScores = 0;
-        while (true)
-        {
-            yield return new WaitForSeconds(0.05f);
-            gameData.sessionScores += 1;
-        }
+        gameData.gameEarnedScores += gameData.sessionScores;
     }
 
     #endregion

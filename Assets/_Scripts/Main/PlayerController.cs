@@ -12,11 +12,11 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpHieght;
     public float groundDistance;
+    public float yDirectionMax;
     public SpriteRenderer playerBody;
     public Transform groundCheck;
     public LayerMask groundLayer;
     public Vector2 xDirectionMinMax;
-    public Vector2 yDirectionMinMax;
     public GameObject dieEffect;
 
     [Header("Movement UI")]
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
         uiManager = _uiManager;
         environmentManager = _environmentManager;
 
-        currentMaxY = yDirectionMinMax.y;
+        currentMaxY = yDirectionMax;
         newYJumpPos = transform.position.y;
         playerBody.sprite = playerInfo.jumpSprite;
         moveButtonLeft.OnPressed = HorizontalMove;
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
         playerRb.bodyType = RigidbodyType2D.Dynamic;
     }
 
-    public void Dead()
+    public void Dead(bool colliodedWithDeadEnd = false)
     {
         isDead = true;
         canMove = false;
@@ -71,8 +71,7 @@ public class PlayerController : MonoBehaviour
         dieEffect.SetActive(true);
         playerBody.sprite = playerInfo.dieSprite;
 
-        DOVirtual.DelayedCall(1.5f, uiManager.GameEnd);
-        DOVirtual.DelayedCall(0.5f, delegate { dieEffect.SetActive(false); });
+        DOVirtual.DelayedCall(colliodedWithDeadEnd ? 0.25f : 1.5f, uiManager.GameEnd);
     }
 
     public void HorizontalMove(float _horizontalDirection)
@@ -95,6 +94,17 @@ public class PlayerController : MonoBehaviour
         CheckBoundaries();
     }
 
+    private void FixedUpdate()
+    {
+        if (!canMove || !isGameStarted)
+            return;
+
+        if (Input.GetAxis("Horizontal") == 0)
+            return;
+
+        HorizontalMove(Input.GetAxis("Horizontal"));
+    }
+
     private void Jump()
     {
         newYJumpPos = transform.position.y;
@@ -108,12 +118,14 @@ public class PlayerController : MonoBehaviour
         if (transform.position.y < newYJumpPos)
         {
             newYJumpPos = transform.position.y;
+            playerBody.sprite = playerInfo.idleSprite;
             isFalling = true;
         }
 
         else if (transform.position.y > newYJumpPos)
         {
             newYJumpPos = transform.position.y;
+            playerBody.sprite = playerInfo.jumpSprite;
             isFalling = false;
         }
 
@@ -134,10 +146,14 @@ public class PlayerController : MonoBehaviour
 
         if(transform.position.y > currentMaxY)
         {
-            currentMaxY += yDirectionMinMax.y;
+            currentMaxY += yDirectionMax;
             environmentManager.RepositionEnvironment();
         }
     }
+
+    #endregion
+
+    #region Trigger Events
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -145,10 +161,23 @@ public class PlayerController : MonoBehaviour
             return;
 
         if (collision.CompareTag("Coin"))
-            collision.gameObject.SetActive(false);
+        {
+            uiManager.AddRewardScores(true);
+            collision.transform.DOMove(collision.transform.position + new Vector3(0, 10f, 0), 1f).
+                OnComplete(() => { collision.gameObject.SetActive(false); });
+        }
 
         if (collision.CompareTag("Death Tag"))
             Dead();
+
+        if (collision.CompareTag("DeadEnd"))
+            Dead(true);
+
+        if (collision.CompareTag("Environment Patch"))
+        {
+            environmentManager.RemoveAndSpawnNewPatch();
+            collision.GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 
     #endregion
