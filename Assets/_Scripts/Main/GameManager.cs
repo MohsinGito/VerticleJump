@@ -1,16 +1,18 @@
+using System.Collections;
 using UnityEngine;
 using Utilities.Audio;
 using Utilities.Data;
-
 public class GameManager : MonoBehaviour
 {
 
     #region Public Attributes
 
     public GameData gameData;
-    public LaodingScreen laodingScreen;
-    public GameplayUIManager gameplayUiManager;
-    public GameplayPopupsManager gameplayPopupsManager;
+
+    [Header("Main Scripts")]
+    public PlayerController playerController;
+    public EnvironmentManager environmentManager;
+    public UIManager gameplayUiManager;
 
     #endregion
 
@@ -18,27 +20,40 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if(gameData.gameInitialized)
-        {
-            laodingScreen.gameObject.SetActive(false);
-            gameplayUiManager.Init(gameData, gameplayPopupsManager);
-            gameplayPopupsManager.Init(gameData, gameplayUiManager);
-        }
-        else
+        // Setting Up Game Volume First
+        if (!gameData.gameInitialized)
         {
             DataController.Instance.Sfx = 1;
             DataController.Instance.Music = 1;
-
-            laodingScreen.Init(() =>
-            {
-                gameplayUiManager.Init(gameData, gameplayPopupsManager);
-                gameplayPopupsManager.Init(gameData, gameplayUiManager);
-
-            }, gameData);
         }
 
         gameData.sfxOn = DataController.Instance.Sfx == 1 ? true : false;
         gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
+
+        // Initializing Main Scripts
+        gameplayUiManager.Init(gameData, this);
+    }
+
+    public void StartGame()
+    {
+        StartCoroutine("IncreaseScores");
+        environmentManager.Init(gameData.selectedStage);
+        playerController.Init(gameData.selectedCharacter, gameplayUiManager, environmentManager);
+    } 
+
+    public void EndGame()
+    {
+        StopCoroutine("IncreaseScores");
+    }
+
+    IEnumerator IncreaseScores()
+    {
+        gameData.sessionScores = 0;
+        while (true)
+        {
+            yield return new WaitForSeconds(0.05f);
+            gameData.sessionScores += 1;
+        }
     }
 
     #endregion

@@ -34,11 +34,13 @@ public class GameData : ScriptableObject
 public struct GameStage
 {
     public string stageName;
+    public Sprite platform;
     public Sprite layerOne;
     public Sprite layerTwo;
     public Sprite layerThree;
     public Sprite groundSprite;
     public Sprite stageUISprite;
+    public Color backgroundColor;
 }
 
 [System.Serializable]

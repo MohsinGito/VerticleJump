@@ -62,6 +62,12 @@ public class ZoomInOutPopUp : ZoomBehaviour
                 m_CanvasGroup.DOFade(1, animationSpeed);
             }
 
+            if(animScaleFactors.Count == 0)
+            {
+                m_RectTransfrom.localScale = Vector3.one;
+                yield return 0;
+            }
+
             for (int i = 0; i < animScaleFactors.Count * 2 && m_RectTransfrom != null; i++)
             {
                 if ((i + 1) % 2 == 0)

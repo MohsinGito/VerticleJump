@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameEndPopUp : GamePopUp
@@ -54,7 +55,7 @@ public class GameEndPopUp : GamePopUp
 
     private void MoveToMainMenu()
     {
-
+        SceneManager.LoadScene("Gameplay");
     }
 
     private void RestartGame()

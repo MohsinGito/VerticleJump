@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GamePausePopUp : GamePopUp
@@ -61,7 +62,7 @@ public class GamePausePopUp : GamePopUp
 
     private void SetUpPausePopUp()
     {
-        pauseText.text = "Pause";
+        pauseText.text = "Quick Action";
         cancelButton.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
         menuButton.gameObject.SetActive(true);
@@ -86,7 +87,7 @@ public class GamePausePopUp : GamePopUp
 
     private void MoveToMainMenu()
     {
-
+        SceneManager.LoadScene("Gameplay");
     }
 
     private void RestartGame()

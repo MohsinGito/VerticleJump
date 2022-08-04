@@ -21,14 +21,14 @@ public class GameplayPopupsManager : MonoBehaviour
     #region Private Attributes
 
     private GameData gameData;
-    private GameplayUIManager gameplayUiManager;
+    private UIManager gameplayUiManager;
     private List<GamePopUp> gamePopUpList;
 
     #endregion
 
     #region Initializing Methods
 
-    public void Init(GameData _gameData, GameplayUIManager _uiManager)
+    public void Init(GameData _gameData, UIManager _uiManager)
     {
         gameData = _gameData;
         gameplayUiManager = _uiManager;
