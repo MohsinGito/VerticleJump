@@ -16,8 +16,8 @@ MonoBehaviour:
   restartGame: 0
   scoresBoost: 50
   coinsScores: 5
-  sessionScores: 0
-  gameEarnedScores: 51960
+  sessionScores: 1060
+  gameEarnedScores: 66030
   gameStages:
   - stageName: Level 1
     platform: {fileID: 21300000, guid: e7c353da85a434e8e9443778558245a6, type: 3}

@@ -1,8 +1,10 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utilities.Audio;
 
 public class GameEndPopUp : GamePopUp
 {
@@ -28,6 +30,7 @@ public class GameEndPopUp : GamePopUp
     public override void Init(GameData _gameData)
     {
         gameData = _gameData;
+        DOTween.KillAll();
 
         menuButton.onClick.AddListener(MoveToMainMenu);
         restartButton.onClick.AddListener(RestartGame);
@@ -41,6 +44,7 @@ public class GameEndPopUp : GamePopUp
 
     public override void Hide()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         popUpAnim.Animate(false);
     }
 
@@ -55,11 +59,13 @@ public class GameEndPopUp : GamePopUp
 
     private void MoveToMainMenu()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         SceneManager.LoadScene("Gameplay");
     }
 
     private void RestartGame()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         gameData.restartGame = true;
         popUpAnim.StopAllAnimations();
         SceneManager.LoadScene("Gameplay");

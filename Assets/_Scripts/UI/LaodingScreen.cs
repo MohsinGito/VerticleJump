@@ -6,6 +6,7 @@ using System.Collections;
 using UnityEngine.Events;
 using Utilities.Audio;
 using Utilities.Data;
+using DG.Tweening;
 
 public class LaodingScreen : Singleton<LaodingScreen>
 {
@@ -25,7 +26,9 @@ public class LaodingScreen : Singleton<LaodingScreen>
     public void Init(UnityAction _actionOnClick, GameData _gameData)
     {
         LoadNewScene();
+
         _gameData.gameInitialized = true;
+        DOTween.KillAll();
 
         playButton.onClick.AddListener(
             _actionOnClick +
@@ -39,7 +42,6 @@ public class LaodingScreen : Singleton<LaodingScreen>
     private void LoadNewScene()
     {
         StartCoroutine(DisplayLoadingUI());
-
         IEnumerator DisplayLoadingUI()
         {
             loadingPanel.SetActive(true);

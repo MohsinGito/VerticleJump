@@ -6,10 +6,11 @@
         {
             NONE,
             BACKGROUND,
-            SELECT,
+            JUMP,
             UI_SFX,
             WIN_SFX,
-            LOOSE_SFX
+            LOOSE_SFX,
+            COIN_COLLECT
         }
     }
 }

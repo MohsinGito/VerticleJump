@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using Utilities.Audio;
 
 public class GameplayPopupsManager : MonoBehaviour
 {
@@ -79,7 +80,9 @@ public class GameplayPopupsManager : MonoBehaviour
         {
             settingsPopUp.Hide();
             DOVirtual.DelayedCall(0.25f, delegate { EnablePopUp(null); });
+            AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         });
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
     }
 
     public void ShowPauseScreen()
@@ -89,7 +92,9 @@ public class GameplayPopupsManager : MonoBehaviour
         {
             gamePausePopUp.Hide();
             DOVirtual.DelayedCall(0.25f, delegate { EnablePopUp(null); });
+            AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         });
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
     }
 
     public void ShowGameEndingScreen()
@@ -100,6 +105,7 @@ public class GameplayPopupsManager : MonoBehaviour
             gameEndPopUp.Hide();
             DOVirtual.DelayedCall(0.25f, delegate { EnablePopUp(null); });
         });
+        AudioController.Instance.PlayAudio(AudioName.WIN_SFX);
     }
 
     #endregion

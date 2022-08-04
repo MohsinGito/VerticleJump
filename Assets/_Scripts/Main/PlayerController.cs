@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities.Audio;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Debugging")]
     [SerializeField] bool canMove;
+    [SerializeField] bool canDie;
 
     #endregion
 
@@ -65,6 +67,9 @@ public class PlayerController : MonoBehaviour
 
     public void Dead(bool colliodedWithDeadEnd = false)
     {
+        if (!canDie)
+            return;
+
         isDead = true;
         canMove = false;
         playerBx.isTrigger = false;
@@ -72,6 +77,7 @@ public class PlayerController : MonoBehaviour
         playerBody.sprite = playerInfo.dieSprite;
 
         DOVirtual.DelayedCall(colliodedWithDeadEnd ? 0.25f : 1.5f, uiManager.GameEnd);
+        AudioController.Instance.PlayAudio(AudioName.LOOSE_SFX);
     }
 
     public void HorizontalMove(float _horizontalDirection)
@@ -83,10 +89,13 @@ public class PlayerController : MonoBehaviour
 
     #region Private Methods
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!canMove || !isGameStarted)
             return;
+
+        if (Input.GetAxis("Horizontal") != 0)
+            HorizontalMove(Input.GetAxis("Horizontal"));
 
         if (CanJump())
             Jump();
@@ -94,21 +103,11 @@ public class PlayerController : MonoBehaviour
         CheckBoundaries();
     }
 
-    private void FixedUpdate()
-    {
-        if (!canMove || !isGameStarted)
-            return;
-
-        if (Input.GetAxis("Horizontal") == 0)
-            return;
-
-        HorizontalMove(Input.GetAxis("Horizontal"));
-    }
-
     private void Jump()
     {
         newYJumpPos = transform.position.y;
         playerRb.velocity = new Vector2(0, (Vector2.up * jumpHieght).y);
+        AudioController.Instance.PlayAudio(AudioName.JUMP);
     }
 
     private bool CanJump()
@@ -160,23 +159,25 @@ public class PlayerController : MonoBehaviour
         if (isDead)
             return;
 
-        if (collision.CompareTag("Coin"))
+        if (isFalling)
         {
-            uiManager.AddRewardScores(true);
-            collision.transform.DOMove(collision.transform.position + new Vector3(0, 10f, 0), 1f).
-                OnComplete(() => { collision.gameObject.SetActive(false); });
-        }
+            if (collision.CompareTag("Coin"))
+            {
+                uiManager.AddRewardScores(true);
+                collision.transform.DOMove(collision.transform.position + new Vector3(0, 10f, 0), 1f).
+                    OnComplete(() => { collision.gameObject.SetActive(false); });
+                AudioController.Instance.PlayAudio(AudioName.COIN_COLLECT);
+            }
 
-        if (collision.CompareTag("Death Tag"))
-            Dead();
+            if (collision.CompareTag("Ground Obstacle"))
+            {
+                Dead();
+            }
 
-        if (collision.CompareTag("DeadEnd"))
-            Dead(true);
-
-        if (collision.CompareTag("Environment Patch"))
-        {
-            environmentManager.RemoveAndSpawnNewPatch();
-            collision.GetComponent<BoxCollider2D>().enabled = false;
+            if (collision.CompareTag("Dead End"))
+            {
+                Dead(true);
+            }
         }
     }
 

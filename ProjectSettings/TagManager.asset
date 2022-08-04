@@ -5,10 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Coin
-  - Death Tag
-  - DeadEnd
   - FxTemporaire
+  - Undefined
   - Environment Patch
+  - Ground Obstacle
+  - Flying Obstacle
+  - Dead End
   layers:
   - Default
   - TransparentFX

@@ -38,7 +38,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        environmentManager.Init(gameData.selectedStage, gameplayUiManager);
+        AudioController.Instance.PlayAudio(AudioName.BACKGROUND);
+        environmentManager.Init(gameData.selectedStage, gameplayUiManager, gameData);
         playerController.Init(gameData.selectedCharacter, gameplayUiManager, environmentManager);
     } 
 

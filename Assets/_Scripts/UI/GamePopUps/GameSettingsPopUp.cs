@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -31,6 +32,8 @@ public class GameSettingsPopUp : GamePopUp
     public override void Init(GameData _gameData)
     {
         gameData = _gameData;
+        DOTween.KillAll();
+
         InitializaVolumeButtons();
     }
 

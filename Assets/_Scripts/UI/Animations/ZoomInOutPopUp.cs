@@ -24,6 +24,7 @@ public class ZoomInOutPopUp : ZoomBehaviour
 
     private void Awake()
     {
+        DOTween.KillAll();
         originalSize = Vector3.one;
         m_RectTransfrom = GetComponent<RectTransform>();
         m_CanvasGroup = GetComponent<CanvasGroup>();

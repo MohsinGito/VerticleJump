@@ -1,7 +1,9 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Utilities.Audio;
 
 public class CharacterSelectionPopUp : GamePopUp
 {
@@ -37,6 +39,7 @@ public class CharacterSelectionPopUp : GamePopUp
         rightArrowButton.onClick.AddListener(MoveToRight);
         selectCharacterButton.onClick.AddListener(SelectCharacter);
 
+        DOTween.KillAll();
         SetUpCharacter();
     }
 
@@ -64,6 +67,7 @@ public class CharacterSelectionPopUp : GamePopUp
         if (currentCharacterIndex == 0)
             return;
 
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         currentCharacterIndex -= 1;
         SetUpCharacter();
     }
@@ -73,6 +77,7 @@ public class CharacterSelectionPopUp : GamePopUp
         if (currentCharacterIndex == gameData.gameCharacters.Count - 1)
             return;
 
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         currentCharacterIndex += 1;
         SetUpCharacter();
     }
@@ -89,6 +94,7 @@ public class CharacterSelectionPopUp : GamePopUp
 
     private void SelectCharacter()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         gameData.selectedCharacter = gameData.gameCharacters[currentCharacterIndex];
         callbackEvent?.Invoke();
     }

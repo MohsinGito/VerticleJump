@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -77,6 +78,7 @@ public class UIManager : MonoBehaviour
 
     public void GameEnd()
     {
+        DOTween.KillAll();
         gameManager.EndGame();
         popupsManager.ShowGameEndingScreen();
     }

@@ -1,9 +1,11 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Utilities.Audio;
 using static GamePopUp;
 
 public class StageSelectionScreen : GamePopUp
@@ -32,6 +34,7 @@ public class StageSelectionScreen : GamePopUp
     {
         gameData = _gameData;
 
+        DOTween.KillAll();
         SetUpDisplayList();
     }
 
@@ -67,6 +70,7 @@ public class StageSelectionScreen : GamePopUp
 
     private void StageSelected(int _stageIndex)
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         gameData.selectedStage = gameData.gameStages[_stageIndex];
         callbackEvent?.Invoke();
     }

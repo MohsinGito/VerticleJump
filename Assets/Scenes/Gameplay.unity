@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 40573199}
   m_Layer: 0
   m_Name: Player End Pos
-  m_TagString: DeadEnd
+  m_TagString: Dead End
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -298,7 +298,7 @@ MonoBehaviour:
     onLoop: 1
     audio:
     - type: 1
-      clip: {fileID: 8300000, guid: e0c50dce24bc642d48de3843c13d75d3, type: 3}
+      clip: {fileID: 8300000, guid: ed48f28785755cc47a37445fb3312f45, type: 3}
   - trackName: Gameplay SFX
     volume: 1
     onLoop: 0
@@ -306,8 +306,8 @@ MonoBehaviour:
     - type: 3
       clip: {fileID: 8300000, guid: 0bdae480c0c8e457b9d5e578304115d7, type: 3}
     - type: 2
-      clip: {fileID: 8300000, guid: 4590333a4995b42a8be9ae396957b84f, type: 3}
-  - trackName: Win/Loos SFX
+      clip: {fileID: 8300000, guid: 0715345d575f13e41a0f2c2c7b03490e, type: 3}
+  - trackName: Special SFX
     volume: 1
     onLoop: 0
     audio:
@@ -315,6 +315,8 @@ MonoBehaviour:
       clip: {fileID: 8300000, guid: 71af18086727f43f6a788c82d35b43a6, type: 3}
     - type: 5
       clip: {fileID: 8300000, guid: 50132e768dc7f43a9b0fd43996fc7ac5, type: 3}
+    - type: 6
+      clip: {fileID: 8300000, guid: 73b3091afdbb9cf49bbf82832179f886, type: 3}
 --- !u!4 &105557984
 Transform:
   m_ObjectHideFlags: 0
@@ -329,6 +331,77 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &153018044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 153018045}
+  - component: {fileID: 153018046}
+  - component: {fileID: 153018047}
+  m_Layer: 0
+  m_Name: Bird Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &153018045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153018044}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1873170453}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &153018046
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153018044}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.008339599, y: -0.035801053}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.3934252, y: 0.5883095}
+  m_EdgeRadius: 0
+--- !u!114 &153018047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153018044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77c460717f626d246905ce10c41312ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1873170454}
 --- !u!1 &195762576
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,7 +863,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4977646799359860, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4977646799359860, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
       propertyPath: m_LocalScale.x
@@ -5061,12 +5134,11 @@ MonoBehaviour:
   startingPatch: 4
   respositionFactor: 3
   respositionSpeed: 0.5
-  newEnvSpawnYPos: 10
+  newEnvSpawnYPos: 10.75
   repositionEnv: {fileID: 322836381}
   ground: {fileID: 1075262041}
   leftBg: {fileID: 67819176}
   rightBg: {fileID: 368768286}
-  environmentPatches: []
 --- !u!1 &1437131288
 GameObject:
   m_ObjectHideFlags: 0
@@ -6453,6 +6525,7 @@ Transform:
   m_Children:
   - {fileID: 1069074268}
   - {fileID: 2113931759}
+  - {fileID: 153018045}
   - {fileID: 380688643}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -6483,6 +6556,7 @@ MonoBehaviour:
   moveButtonLeft: {fileID: 1115562490}
   moveButtonRight: {fileID: 1995785336}
   canMove: 1
+  canDie: 1
 --- !u!61 &1873170455
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,8 +1,10 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utilities.Audio;
 
 public class GamePausePopUp : GamePopUp
 {
@@ -32,6 +34,7 @@ public class GamePausePopUp : GamePopUp
     public override void Init(GameData _gameData)
     {
         gameData = _gameData;
+        DOTween.KillAll();
 
         noButton.onClick.AddListener(Cancel);
         yesButton.onClick.AddListener(MoveToMainMenu);
@@ -87,11 +90,13 @@ public class GamePausePopUp : GamePopUp
 
     private void MoveToMainMenu()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         SceneManager.LoadScene("Gameplay");
     }
 
     private void RestartGame()
     {
+        AudioController.Instance.PlayAudio(AudioName.UI_SFX);
         gameData.restartGame = true;
         popUpAnim.StopAllAnimations();
         SceneManager.LoadScene("Gameplay");
