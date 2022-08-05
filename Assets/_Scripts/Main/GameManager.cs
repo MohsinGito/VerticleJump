@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         gameData.CheckGameUnlockedElements();
+        gameData.gameEarnedScores = DataController.Instance.Scores;
 
         // Setting Up Game Volume First
         if (!gameData.gameInitialized)
@@ -29,8 +30,8 @@ public class GameManager : MonoBehaviour
             DataController.Instance.Music = 1;
         }
 
-        gameData.sfxOn = DataController.Instance.Sfx == 1 ? true : false;
-        gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
+        //gameData.sfxOn = DataController.Instance.Sfx == 1 ? true : false;
+        //gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
 
         // Initializing Main Scripts
         gameplayUiManager.Init(gameData, this);
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         gameData.gameEarnedScores += gameData.sessionScores;
+        DataController.Instance.Scores = gameData.gameEarnedScores;
     }
 
     #endregion

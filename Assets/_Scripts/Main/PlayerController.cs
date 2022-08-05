@@ -82,6 +82,9 @@ public class PlayerController : MonoBehaviour
 
     public void HorizontalMove(float _horizontalDirection)
     {
+        if (!canMove)
+            return;
+
         playerRb.velocity = new Vector2(_horizontalDirection * moveSpeed * Time.deltaTime, playerRb.velocity.y);
     }
 
@@ -138,10 +141,10 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.identity;
 
         if (transform.position.x <= xDirectionMinMax.x)
-            transform.position = new Vector2(xDirectionMinMax.y - 0.1f, transform.position.y + 2f);
+            transform.position = new Vector2(xDirectionMinMax.y - 0.1f, transform.position.y + 1f);
 
         if (transform.position.x >= xDirectionMinMax.y)
-            transform.position = new Vector2(xDirectionMinMax.x + 0.1f, transform.position.y + 2f);
+            transform.position = new Vector2(xDirectionMinMax.x + 0.1f, transform.position.y + 1f);
 
         if(transform.position.y > currentMaxY)
         {

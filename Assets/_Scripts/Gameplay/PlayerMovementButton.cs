@@ -11,6 +11,7 @@ public class PlayerMovementButton : MonoBehaviour, IPointerDownHandler, IPointer
     
     private UnityAction<float> OnButtonPressed;
     private bool buttonPressed;
+    private bool buttonUp;
 
     #endregion
 
@@ -29,12 +30,21 @@ public class PlayerMovementButton : MonoBehaviour, IPointerDownHandler, IPointer
     public void OnPointerUp(PointerEventData eventData)
     {
         buttonPressed = false;
+        buttonUp = true;
     }
 
     private void FixedUpdate()
     {
         if (buttonPressed)
             OnButtonPressed?.Invoke(movementFactor);
+        else
+        {
+            if(buttonUp)
+            {
+                buttonUp = false;
+                OnButtonPressed?.Invoke(0);
+            }
+        }
     }
 
     #endregion

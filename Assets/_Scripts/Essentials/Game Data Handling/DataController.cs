@@ -11,7 +11,7 @@ namespace Utilities
 
             private static readonly string Music_State = "music";
             private static readonly string Sfx_State = "sfx";
-            private static readonly string Coins_Count = "coins";
+            private static readonly string Scores_Count = "scores";
             private static readonly int DEFAULT_VAL = 0;
 
             #endregion
@@ -42,15 +42,15 @@ namespace Utilities
                 }
             }
 
-            public int Coins
+            public int Scores
             {
                 get
                 {
-                    return GetInt(Coins_Count);
+                    return GetInt(Scores_Count);
                 }
                 set
                 {
-                    SaveInt(Coins_Count, value);
+                    SaveInt(Scores_Count, value);
                 }
             }
 

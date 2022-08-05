@@ -36,10 +36,13 @@ public class GameData : ScriptableObject
     public void CheckGameUnlockedElements()
     {
         for (int i = 0; i < gameStages.Count; i++)
-            gameStages[i].unLocked = gameEarnedScores > gameStages[i].scoresCriteria;
+            gameStages[i].unLocked = gameEarnedScores >= gameStages[i].scoresCriteria;
 
         for (int i = 0; i < gameCharacters.Count; i++)
-            gameCharacters[i].unLocked = gameEarnedScores > gameCharacters[i].scoresCriteria;
+            gameCharacters[i].unLocked = gameEarnedScores >= gameCharacters[i].scoresCriteria;
+
+        gameCharacters[0].characterName = "Charlie";
+        gameCharacters[0].scoresCriteria = 0;
     }
 
     #endregion

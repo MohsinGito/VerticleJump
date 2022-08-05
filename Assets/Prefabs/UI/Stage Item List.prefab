@@ -28,6 +28,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1699148509110645192}
   m_RootOrder: 0
@@ -162,6 +163,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1699148509728506804}
   m_RootOrder: 2
@@ -201,15 +203,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Reach Up To 50000 Scores To Unlock This Stage!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5fc0a22c0041e44118994b08ec3e1918, type: 2}
-  m_sharedMaterial: {fileID: 3656077700395906305, guid: 5fc0a22c0041e44118994b08ec3e1918, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 287e92e96f22b4f73bef2c2b8cfffa33, type: 2}
+  m_sharedMaterial: {fileID: -5358453577877334717, guid: 287e92e96f22b4f73bef2c2b8cfffa33, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278518015
-  m_fontColor: {r: 1, g: 0, b: 0.019788265, a: 1}
+    rgba: 4282602225
+  m_fontColor: {r: 0.9433962, g: 0.3198732, b: 0.26254895, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -297,6 +299,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 734484560}
   m_Father: {fileID: 1699148509728506804}
@@ -415,6 +418,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1699148509765874605}
   - {fileID: 1699148510431281352}
@@ -456,6 +460,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1699148509728506804}
   m_RootOrder: 0
@@ -531,6 +536,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1699148509728506804}
   m_RootOrder: 1
