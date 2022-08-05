@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Filds")]
     public float moveSpeed;
     public float jumpHieght;
+    public float boostJumpHieght;
     public float groundDistance;
     public float yDirectionMax;
     public SpriteRenderer playerBody;
@@ -113,6 +114,14 @@ public class PlayerController : MonoBehaviour
         AudioController.Instance.PlayAudio(AudioName.JUMP);
     }
 
+    private void BoostJump()
+    {
+        Debug.Log("Boost Jump");
+        newYJumpPos = transform.position.y;
+        playerRb.velocity = new Vector2(0, (Vector2.up * boostJumpHieght).y);
+        AudioController.Instance.PlayAudio(AudioName.BOOST_JUMP);
+    }
+
     private bool CanJump()
     {
         isOnGround = Physics2D.OverlapCircle(groundCheck.position, groundDistance, groundLayer);
@@ -149,7 +158,7 @@ public class PlayerController : MonoBehaviour
         if(transform.position.y > currentMaxY)
         {
             currentMaxY += yDirectionMax;
-            environmentManager.RepositionEnvironment();
+            environmentManager.RepositionEnvironment(yDirectionMax);
         }
     }
 
@@ -170,6 +179,11 @@ public class PlayerController : MonoBehaviour
                 collision.transform.DOMove(collision.transform.position + new Vector3(0, 10f, 0), 1f).
                     OnComplete(() => { collision.gameObject.SetActive(false); });
                 AudioController.Instance.PlayAudio(AudioName.COIN_COLLECT);
+            }
+
+            if (collision.CompareTag("Boost Jump"))
+            {
+                BoostJump();
             }
 
             if (collision.CompareTag("Ground Obstacle"))

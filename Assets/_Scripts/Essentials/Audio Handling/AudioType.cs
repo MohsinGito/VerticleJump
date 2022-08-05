@@ -10,7 +10,8 @@
             UI_SFX,
             WIN_SFX,
             LOOSE_SFX,
-            COIN_COLLECT
+            COIN_COLLECT,
+            BOOST_JUMP
         }
     }
 }

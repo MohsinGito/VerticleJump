@@ -9,7 +9,6 @@ public class EnvironmentManager : MonoBehaviour
     #region Public Attributes
 
     public int startingPatch;
-    public float respositionFactor;
     public float respositionSpeed;
     public float newEnvSpawnYPos;
     public Transform repositionEnv;
@@ -76,10 +75,10 @@ public class EnvironmentManager : MonoBehaviour
         environmentPatches[environmentPatches.Count - 1].Init(currentStageInfo, gameData, canSpawnEnemies);
     }
 
-    public void RepositionEnvironment()
+    public void RepositionEnvironment(float _repositionFactor)
     {
         uiManager.AddRewardScores();
-        nextPositionForRepositioning += transform.position + new Vector3(0, respositionFactor);
+        nextPositionForRepositioning += transform.position + new Vector3(0, _repositionFactor);
         repositionEnv.DOMove(nextPositionForRepositioning, respositionSpeed);
     }
 

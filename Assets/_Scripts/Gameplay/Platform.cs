@@ -73,6 +73,10 @@ public class Platform : MonoBehaviour
                     break;
             }
         }
+        get
+        {
+            return currentType;
+        }
     }
 
     public Element Coins

@@ -3131,6 +3131,10 @@ MonoBehaviour:
     Prefab: {fileID: 4200991307169243431, guid: 2d1838a2e6c858246a5f68250c31170e, type: 3}
   - Tag: Environment Patch
     Prefab: {fileID: 494869005851578972, guid: c23a53eec259d8c48b59284ec7287a63, type: 3}
+  - Tag: Arrows Obstacle
+    Prefab: {fileID: 1772545441793283042, guid: 05cc3b604f3df4be8b389347978fab75, type: 3}
+  - Tag: Jumping Spring
+    Prefab: {fileID: 5282395321177661160, guid: 1f65de2bd12de47159212ea3eb2eaa36, type: 3}
   canDebug: 0
 --- !u!1 &984925320
 GameObject:
@@ -5187,7 +5191,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingPatch: 4
-  respositionFactor: 3
   respositionSpeed: 0.5
   newEnvSpawnYPos: 10.75
   repositionEnv: {fileID: 322836381}
@@ -6613,7 +6616,7 @@ MonoBehaviour:
   moveSpeed: 160
   jumpHieght: 8.5
   groundDistance: 0.025
-  yDirectionMax: 3
+  yDirectionMax: 0.5
   playerBody: {fileID: 1069074269}
   groundCheck: {fileID: 2113931759}
   groundLayer:

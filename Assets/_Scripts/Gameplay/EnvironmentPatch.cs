@@ -15,6 +15,7 @@ public class EnvironmentPatch : MonoBehaviour
     public int spawnProbability;
     public Vector2 xMinMax;
     public List<Platform> platforms;
+    public List<Platform> mustPlatforms;
 
     [Header("Display Sprites")]
     public SpriteRenderer layer1;
@@ -82,26 +83,13 @@ public class EnvironmentPatch : MonoBehaviour
 
     private void SetUpPatch()
     {
+        foreach(Platform platform in mustPlatforms)
+        {
+            SetUpPlarform(platform);
+        }
+
         for (int i = 0; i < platforms.Count; i++)
         {
-            if (i == 0)
-            {
-                SetUpPlarform(platforms[i]);
-                continue;
-            }
-
-            if (i == maxPlatforms / 2)
-            {
-                SetUpPlarform(platforms[i]);
-                continue;
-            }
-                
-            if (i == maxPlatforms - 1)
-            {
-                SetUpPlarform(platforms[i]);
-                continue;
-            }
-
             if (Random.Range(0, spawnProbability) == Mathf.FloorToInt(spawnProbability / 2))
                 SetUpObstacle(platforms[i], Random.Range(0, 2) == 0);
             else
@@ -127,10 +115,28 @@ public class EnvironmentPatch : MonoBehaviour
         float _platformXPos = Random.Range(xMinMax.x, xMinMax.y);
 
         platform.ResetPlatForm();
-        platform.State = Random.Range(0, 2) == 1 ? PlatformType.SINGLE : PlatformType.DOUBLE;
-        platform.Coins = Random.Range(0, 2) == 1 && _canHaveCoins ? Element.CONTAIN : Element.IDLE;
         platform.transform.position = new Vector3(_platformXPos, platform.transform.position.y, 0);
         platform.DisplaySprite = currentStageInfo.platform;
+
+        if (Random.Range(0, 2) == 1)
+        {
+            platform.State = PlatformType.SINGLE;
+            platform.Coins = Random.Range(0, 2) == 0 && _canHaveCoins ? Element.CONTAIN : Element.IDLE;
+        }
+        else
+        {
+            platform.State = PlatformType.DOUBLE;
+            if(Random.Range(0, 2) == 0)
+            {
+                platform.Coins = Element.CONTAIN;
+                if (canSpawnEnemies && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
+            }
+            else
+            {
+                if (canSpawnEnemies && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
+                platform.Coins = Element.CONTAIN;
+            }
+        }
     }
 
     private void SpawnPatchFlyingObstacle()
