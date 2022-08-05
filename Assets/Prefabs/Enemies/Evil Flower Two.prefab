@@ -111,7 +111,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4965266623535235766}
-  - component: {fileID: 4965266623535235765}
+  - component: {fileID: 4722308729707066505}
   m_Layer: 0
   m_Name: Evil Flower Two
   m_TagString: Ground Obstacle
@@ -134,8 +134,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &4965266623535235765
-BoxCollider2D:
+--- !u!58 &4722308729707066505
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -144,19 +144,9 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.027669847, y: -0.014605388}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.84, y: 3.06}
-    newSize: {x: 2.84, y: 3.06}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: 0, y: 0.2755585}
   serializedVersion: 2
-  m_Size: {x: 0.6659756, y: 0.92034304}
-  m_EdgeRadius: 0
+  m_Radius: 0.39496657

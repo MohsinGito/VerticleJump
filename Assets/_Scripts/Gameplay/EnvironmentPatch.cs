@@ -14,6 +14,7 @@ public class EnvironmentPatch : MonoBehaviour
     public float startSpawnY;
     public int spawnProbability;
     public Vector2 xMinMax;
+    public List<Platform> platforms;
 
     [Header("Display Sprites")]
     public SpriteRenderer layer1;
@@ -32,7 +33,6 @@ public class EnvironmentPatch : MonoBehaviour
     private GameData gameData;
     private bool canSpawnEnemies;
     private GameStage currentStageInfo;
-    private List<Platform> platforms;
     private List<PoolObj> flyingObstacles;
 
     #endregion
@@ -60,83 +60,88 @@ public class EnvironmentPatch : MonoBehaviour
 
     public void ResetPatch()
     {
-        if(platforms == null)
+        foreach (Platform platform in platforms)
         {
-            platforms = new List<Platform>();
+            platform.gameObject.SetActive(false);
+        }
+
+        if (flyingObstacles == null)
+        {
             flyingObstacles = new List<PoolObj>();
             return;
         }
-
-        StopAllCoroutines();
-
-        foreach (Platform platform in platforms)
-        {
-            PoolManager.Instance.ReturnToPool("Platform", platform.gameObject);
-        }
-        platforms.Clear();
 
         foreach (PoolObj obj in flyingObstacles)
         {
             PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
         }
+
         flyingObstacles.Clear();
+        StopAllCoroutines();
     }
 
     private void SetUpPatch()
     {
-        for (int i = 0; i < maxPlatforms; i++)
+        for (int i = 0; i < platforms.Count; i++)
         {
             if (i == 0)
-                SpawnNewPlatform(startSpawnY);
-            else if (i == maxPlatforms / 2)
-                SpawnNewPlatform(startSpawnY + ((maxPlatforms - 1) / 2 * platformOffset));
-            else if (i == maxPlatforms - 1)
-                SpawnNewPlatform(startSpawnY + ((maxPlatforms - 1) * platformOffset));
-            else
             {
-                if (Random.Range(0, spawnProbability) == Mathf.FloorToInt(spawnProbability / 2))
-                    SpawnObstacle(Random.Range(0, 2) == 0, startSpawnY + ((maxPlatforms - i - 1) * platformOffset));
-                else
-                    SpawnNewPlatform(startSpawnY + ((maxPlatforms - i - 1) * platformOffset));
+                SetUpPlarform(platforms[i]);
+                continue;
             }
+
+            if (i == maxPlatforms / 2)
+            {
+                SetUpPlarform(platforms[i]);
+                continue;
+            }
+                
+            if (i == maxPlatforms - 1)
+            {
+                SetUpPlarform(platforms[i]);
+                continue;
+            }
+
+            if (Random.Range(0, spawnProbability) == Mathf.FloorToInt(spawnProbability / 2))
+                SetUpObstacle(platforms[i], Random.Range(0, 2) == 0);
+            else
+                SetUpPlarform(platforms[i]);
         }
 
         SpawnPatchFlyingObstacle();
     }
 
-    private void SpawnObstacle(bool _spawnGroundObstacle, float nextPatchYPos)
+    private void SetUpObstacle(Platform platform, bool _spawnGroundObstacle)
     {
         if (!canSpawnEnemies)
             return;
 
-        SpawnNewPlatform(nextPatchYPos, false);
+        SetUpPlarform(platform, false);
         platforms[platforms.Count - 1].Obstacle = Element.CONTAIN;
         platforms[platforms.Count - 1].Coins = Element.CONTAIN;
     }
-    
+
+    private void SetUpPlarform(Platform platform, bool _canHaveCoins = true)
+    {
+        platform.gameObject.SetActive(true);
+        float _platformXPos = Random.Range(xMinMax.x, xMinMax.y);
+
+        platform.ResetPlatForm();
+        platform.State = Random.Range(0, 2) == 1 ? PlatformType.SINGLE : PlatformType.DOUBLE;
+        platform.Coins = Random.Range(0, 2) == 1 && _canHaveCoins ? Element.CONTAIN : Element.IDLE;
+        platform.transform.position = new Vector3(_platformXPos, platform.transform.position.y, 0);
+        platform.DisplaySprite = currentStageInfo.platform;
+    }
+
     private void SpawnPatchFlyingObstacle()
     {
-        foreach(FlyingObstacle flyingObstacle in flyingObstacleInfo)
+        foreach (FlyingObstacle flyingObstacle in flyingObstacleInfo)
         {
-            if(gameData.sessionScores > flyingObstacle.criteriaScores)
+            if (gameData.sessionScores > flyingObstacle.criteriaScores)
             {
                 SetNewFlyingObstacle(flyingObstacle.leftSide.position, flyingObstacle.rightSide.position);
             }
         }
-    }
-
-    private void SpawnNewPlatform(float _platformYPos, bool _canHaveCoins = true)
-    {
-        float _platformXPos = Random.Range(xMinMax.x, xMinMax.y);
-
-        platforms.Add(PoolManager.Instance.GetFromPool("Platform").GetComponent<Platform>());
-        platforms[platforms.Count - 1].ResetPlatForm();
-
-        platforms[platforms.Count - 1].State = Random.Range(0, 2) == 1 ? PlatformType.SINGLE  : PlatformType.DOUBLE;
-        platforms[platforms.Count - 1].Coins = Random.Range(0, 2) == 1 && _canHaveCoins ? Element.CONTAIN : Element.IDLE;
-        platforms[platforms.Count - 1].transform.position = new Vector3(_platformXPos, _platformYPos, 0) + transform.position;
-        platforms[platforms.Count - 1].DisplaySprite = currentStageInfo.platform;
-        platforms[platforms.Count - 1].transform.parent = transform;
     }
 
     private void SetNewFlyingObstacle(Vector3 leftPos, Vector3 rightPos)
