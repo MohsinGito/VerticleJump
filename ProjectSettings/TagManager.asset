@@ -12,6 +12,7 @@ TagManager:
   - Flying Obstacle
   - Dead End
   - Boost Jump
+  - Extra Life
   layers:
   - Default
   - TransparentFX

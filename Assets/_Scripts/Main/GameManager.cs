@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
         //gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
 
         // Initializing Main Scripts
-        gameplayUiManager.Init(gameData, this);
+        gameplayUiManager.Init(playerController, gameData, this);
     }
 
     public void StartGame()

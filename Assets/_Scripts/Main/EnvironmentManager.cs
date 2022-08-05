@@ -10,6 +10,7 @@ public class EnvironmentManager : MonoBehaviour
 
     public int startingPatch;
     public float respositionSpeed;
+    public float envRepositionY;
     public float newEnvSpawnYPos;
     public Transform repositionEnv;
     public SpriteRenderer ground;
@@ -21,6 +22,7 @@ public class EnvironmentManager : MonoBehaviour
     #region Private Attributes
 
     private bool isFirstPatch;
+    private float currentPlayerMaxY;
     private float currentRepositionYPos;
     private Transform playerTransform;
     private GameStage currentStageInfo;
@@ -42,6 +44,7 @@ public class EnvironmentManager : MonoBehaviour
         ground.sprite = _stageInfo.groundSprite;
         leftBg.color = _stageInfo.backgroundColor;
         rightBg.color = _stageInfo.backgroundColor;
+        currentPlayerMaxY = envRepositionY;
         currentRepositionYPos = newEnvSpawnYPos;
         nextPositionForRepositioning = Vector3.zero;
         environmentPatches = new List<EnvironmentPatch>();
@@ -53,7 +56,7 @@ public class EnvironmentManager : MonoBehaviour
 
         for (int i = 0; i < startingPatch; i++)
         {
-            if(i == 0)
+            if(i < 2)
                 SpawnNewPatch(false);
             else
                 SpawnNewPatch(true);
@@ -62,7 +65,7 @@ public class EnvironmentManager : MonoBehaviour
         CheckForPlayerDistance();
     }
 
-    public void SpawnNewPatch(bool canSpawnEnemies = true)
+    public void SpawnNewPatch(bool _notInInitialStages = true)
     {
         environmentPatches.Add(PoolManager.Instance.GetFromPool("Environment Patch").GetComponent<EnvironmentPatch>());
 
@@ -72,14 +75,16 @@ public class EnvironmentManager : MonoBehaviour
                 environmentPatches[environmentPatches.Count - 2].transform.position + new Vector3(0, newEnvSpawnYPos, 0);
         }
 
-        environmentPatches[environmentPatches.Count - 1].Init(currentStageInfo, gameData, canSpawnEnemies);
-    }
+        environmentPatches[environmentPatches.Count - 1].Init(currentStageInfo, gameData, _notInInitialStages);
 
-    public void RepositionEnvironment(float _repositionFactor)
-    {
-        uiManager.AddRewardScores();
-        nextPositionForRepositioning += transform.position + new Vector3(0, _repositionFactor);
-        repositionEnv.DOMove(nextPositionForRepositioning, respositionSpeed);
+        if(_notInInitialStages)
+        {
+            if(Random.Range(0, 2) == 1)
+                environmentPatches[environmentPatches.Count - 1].SetPowerUpOnPatch(PowerUp.EXTRA_LIFE, 1);
+
+            if (Random.Range(0, 2) == 1)
+                environmentPatches[environmentPatches.Count - 1].SetPowerUpOnPatch(PowerUp.JUMP_BOOST, 1);
+        }
     }
 
     public void CheckForPlayerDistance()
@@ -87,13 +92,25 @@ public class EnvironmentManager : MonoBehaviour
         StartCoroutine(StartChecking());
         IEnumerator StartChecking()
         {
-            while(true)
+            while (true)
             {
                 if (playerTransform.position.y > currentRepositionYPos)
                 {
                     RemoveAndAddNewPatch();
                     currentRepositionYPos = playerTransform.position.y + newEnvSpawnYPos;
                 }
+
+                if (playerTransform.position.y > currentPlayerMaxY)
+                {
+                    uiManager.AddRewardScores();
+                    currentPlayerMaxY += envRepositionY;
+                    nextPositionForRepositioning += transform.position + new Vector3(0, envRepositionY);
+                }
+                else
+                {
+                    repositionEnv.DOMove(nextPositionForRepositioning, respositionSpeed / 100);
+                }
+
                 yield return new WaitForFixedUpdate();
             }
         }

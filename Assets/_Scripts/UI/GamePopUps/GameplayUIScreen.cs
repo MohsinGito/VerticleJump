@@ -10,12 +10,14 @@ public class GameplayUIScreen : MonoBehaviour
 
     public ZoomInOutPopUp uiAnim;
     public TMP_Text scoresText;
+    public TMP_Text livesText;
     public Button pauseButton;
 
     #endregion
 
     #region Private Attributes
 
+    private int currentScores;
     private int scoresLeftToAdd;
     private GameData gameData;
     private GameplayPopupsManager popupsManager;
@@ -49,11 +51,17 @@ public class GameplayUIScreen : MonoBehaviour
     public void IncrementBoostScores()
     {
         scoresLeftToAdd += gameData.scoresBoost;
+        gameData.sessionScores += gameData.scoresBoost;
     }
 
     public void IncrementCoinScores()
     {
         scoresLeftToAdd += gameData.coinsScores;
+    }
+
+    public void UpdateLivesUI(int lives)
+    {
+        livesText.text = "Lives Left : " + lives;
     }
 
     private void UpdateScoresUI()
@@ -65,11 +73,11 @@ public class GameplayUIScreen : MonoBehaviour
             {
                 if(scoresLeftToAdd > 0)
                 {
+                    currentScores += 1;
                     scoresLeftToAdd -= 1;
-                    gameData.sessionScores += 1;
-                    scoresText.text = gameData.sessionScores.ToString();
+                    scoresText.text = currentScores.ToString();
                 }
-                yield return null;  
+                yield return new WaitForSeconds(0.02f);  
             }
         }
     }

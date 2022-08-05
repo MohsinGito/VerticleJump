@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,13 +8,11 @@ public class Platform : MonoBehaviour
 
     [Header("Left Side Platform Info")]
     public SpriteRenderer leftPlatform;
-    public Transform leftCoinPos;
-    public Transform leftObstaclePos;
+    public Transform leftSpawnPos;
 
     [Header("Right Side Platform Info")]
     public SpriteRenderer rightPlatform;
-    public Transform rightCoinPos;
-    public Transform rightObstaclePos;
+    public Transform rightSpawnPos;
 
     [Header("Other Info")]
     public List<string> groundEnemies;
@@ -25,11 +22,11 @@ public class Platform : MonoBehaviour
 
     #region Private Attributes
 
+    private bool powerUpAssigned;
     private bool leftSideOccupied;
     private bool rightSideOccupied;
     private PlatformType currentType;
-    private List<PoolObj> enemySpawned = new List<PoolObj>();
-    private List<PoolObj> coinsSpawned = new List<PoolObj>();
+    private List<PoolObj> spawnedElements = new List<PoolObj>();
 
     #endregion
 
@@ -88,12 +85,12 @@ public class Platform : MonoBehaviour
                 if (!leftSideOccupied)
                 {
                     leftSideOccupied = true;
-                    SpawnCoin(leftCoinPos);
+                    AddNewElementToPlatform("Coin", leftSpawnPos);
                 }
                 else if (!rightSideOccupied)
                 {
                     rightSideOccupied = true;
-                    SpawnCoin(rightCoinPos);
+                    AddNewElementToPlatform("Coin", rightSpawnPos);
                 }
             }
         }
@@ -108,15 +105,66 @@ public class Platform : MonoBehaviour
                 if (!leftSideOccupied)
                 {
                     leftSideOccupied = true;
-                    SpawnObstacle(leftObstaclePos);
+                    AddNewElementToPlatform(groundEnemies
+                        [Random.Range(0, groundEnemies.Count)], leftSpawnPos);
                 }
                 else if (!rightSideOccupied)
                 {
                     rightSideOccupied = true;
-                    SpawnObstacle(rightObstaclePos);
+                    AddNewElementToPlatform(groundEnemies
+                        [Random.Range(0, groundEnemies.Count)], rightSpawnPos);
                 }
             }
         }
+    }
+
+    public Element ExtraLife
+    {
+        set
+        {
+            if (value == Element.CONTAIN)
+            {
+                if (!leftSideOccupied)
+                {
+                    leftSideOccupied = true;
+                    powerUpAssigned = true;
+                    AddNewElementToPlatform("Extra Life", leftSpawnPos);
+                }
+                else if (!rightSideOccupied)
+                {
+                    rightSideOccupied = true;
+                    powerUpAssigned = true;
+                    AddNewElementToPlatform("Extra Life", rightSpawnPos);
+                }
+            }
+        }
+    }
+
+    public Element JumpBoost
+    {
+        set
+        {
+            if (value == Element.CONTAIN)
+            {
+                if (!leftSideOccupied)
+                {
+                    leftSideOccupied = true;
+                    powerUpAssigned = true;
+                    AddNewElementToPlatform("Jumping Spring", leftSpawnPos);
+                }
+                else if (!rightSideOccupied)
+                {
+                    rightSideOccupied = true;
+                    powerUpAssigned = true;
+                    AddNewElementToPlatform("Jumping Spring", rightSpawnPos);
+                }
+            }
+        }
+    }
+
+    public bool PowerUpAssigned
+    {
+        get { return powerUpAssigned; }
     }
 
     #endregion
@@ -125,42 +173,26 @@ public class Platform : MonoBehaviour
 
     public void ResetPlatForm()
     {
-        foreach (PoolObj obj in enemySpawned)
+        foreach (PoolObj obj in spawnedElements)
         {
             obj.Prefab.transform.position = Vector3.zero;
             PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
         }
 
-        foreach (PoolObj obj in coinsSpawned)
-        {
-            obj.Prefab.transform.position = Vector3.zero;
-            PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
-        }
-
-        enemySpawned.Clear();
-        coinsSpawned.Clear();
+        spawnedElements.Clear();
+        powerUpAssigned = false;
         leftSideOccupied = true;
         rightSideOccupied = true;
         leftPlatform.gameObject.SetActive(false);
         rightPlatform.gameObject.SetActive(false);
     }
 
-    private void SpawnObstacle(Transform _spawnPos)
+    private void AddNewElementToPlatform(string tag, Transform parent)
     {
-        string randomEnemy = groundEnemies[Random.Range(0, groundEnemies.Count)];
-        GameObject newEnemy = PoolManager.Instance.GetFromPool(randomEnemy);
-        enemySpawned.Add(new PoolObj(randomEnemy, newEnemy));
-        newEnemy.transform.parent = _spawnPos;
-        newEnemy.transform.position = _spawnPos.position;
-        newEnemy.transform.localScale = Vector2.one;
-    }
-
-    private void SpawnCoin(Transform _spawnPos)
-    {
-        GameObject coin = PoolManager.Instance.GetFromPool("Coin");
-        coinsSpawned.Add(new PoolObj("Coin", coin));
-        coin.transform.parent = _spawnPos;
-        coin.transform.position = _spawnPos.position;
+        GameObject obj = PoolManager.Instance.GetFromPool(tag);
+        spawnedElements.Add(new PoolObj(tag, obj));
+        obj.transform.position = parent.position;
+        obj.transform.localScale = Vector3.one;
     }
 
     #endregion

@@ -17,19 +17,22 @@ public class UIManager : MonoBehaviour
 
     #region Private Attributes
 
+    private int livesLeft;
     private GameData gameData;
     private GameManager gameManager;
+    private PlayerController playerController;
 
     #endregion
 
     #region Public Methods
 
-    public void Init(GameData _gameData, GameManager _gameManager)
+    public void Init(PlayerController _playerController, GameData _gameData, GameManager _gameManager)
     {
         gameData = _gameData;
         gameManager = _gameManager;
+        playerController = _playerController;
 
-        if(gameData.restartGame)
+        if (gameData.restartGame)
         {
             laodingScreen.gameObject.SetActive(false);
             popupsManager.Init(gameData, this);
@@ -59,14 +62,42 @@ public class UIManager : MonoBehaviour
 
             }, gameData);
         }
+
+        livesLeft = 1;
+        gameplayUiScreen.UpdateLivesUI(livesLeft);
     }
 
     public void AddRewardScores(bool _coinReward = false)
     {
+        if (playerController.isInJumpBoost)
+            return;
+
         if (_coinReward)
             gameplayUiScreen.IncrementCoinScores();
         else
             gameplayUiScreen.IncrementBoostScores();
+    }
+
+    public void AddLife()
+    {
+        livesLeft += 1;
+        gameplayUiScreen.UpdateLivesUI(livesLeft);
+    }
+
+    public bool AllLivesEnded(bool _collidedWithDeadEnd)
+    {
+        if (_collidedWithDeadEnd)
+            livesLeft = 0;
+        else
+            livesLeft -= 1;
+
+        if(livesLeft <= 0)
+        {
+            gameplayUiScreen.UpdateLivesUI(0);
+            return true;
+        }
+        gameplayUiScreen.UpdateLivesUI(livesLeft);
+        return false;
     }
 
     public void StartGame()

@@ -32,7 +32,7 @@ public class EnvironmentPatch : MonoBehaviour
     #region Private Attributes
 
     private GameData gameData;
-    private bool canSpawnEnemies;
+    private bool notInInitialStages;
     private GameStage currentStageInfo;
     private List<PoolObj> flyingObstacles;
 
@@ -40,18 +40,54 @@ public class EnvironmentPatch : MonoBehaviour
 
     #region Public Methods
 
-    public void Init(GameStage _stageInfo, GameData _gameData, bool _canSpawnEnemies = true)
+    public void Init(GameStage _stageInfo, GameData _gameData, bool _notInInitialStages = true)
     {
         ResetPatch();
 
-        gameData = _gameData;   
+        gameData = _gameData;
         currentStageInfo = _stageInfo;
         layer1.sprite = _stageInfo.layerOne;
         layer2.sprite = _stageInfo.layerTwo;
         layer3.sprite = _stageInfo.layerThree;
-        canSpawnEnemies = _canSpawnEnemies;
+        notInInitialStages = _notInInitialStages;
+        flyingObstacleNames = Generics<string>.Randomize(flyingObstacleNames);
 
         SetUpPatch();
+    }
+
+    public void SetPowerUpOnPatch(PowerUp powerUp, int max)
+    {
+        List<Platform> randomPlatforms = Generics<Platform>.Randomize(mustPlatforms);
+        for (int i = 0; i < max; i++)
+        {
+            if (max > randomPlatforms.Count)
+                break;
+
+            if(!randomPlatforms[i].PowerUpAssigned)
+            {
+                randomPlatforms[i].ResetPlatForm();
+                randomPlatforms[i].State = GetRandomPlatformType();
+                SetPowerUp(randomPlatforms[i]);
+            }
+            else
+            {
+                max += 1;
+            }
+        }
+
+        void SetPowerUp(Platform platform)
+        {
+            switch (powerUp)
+            {
+                case PowerUp.EXTRA_LIFE:
+                    platform.ExtraLife = Element.CONTAIN;
+                    break;
+                case PowerUp.JUMP_BOOST:
+                    platform.JumpBoost = Element.CONTAIN;
+                    break;
+            }
+            SetCoinOrObstacle(platform);
+        }
     }
 
     #endregion
@@ -74,36 +110,36 @@ public class EnvironmentPatch : MonoBehaviour
 
         foreach (PoolObj obj in flyingObstacles)
         {
+            obj.Prefab.transform.DOKill();
             PoolManager.Instance.ReturnToPool(obj.Tag, obj.Prefab);
         }
 
         flyingObstacles.Clear();
-        StopAllCoroutines();
     }
 
     private void SetUpPatch()
     {
-        foreach(Platform platform in mustPlatforms)
+        foreach (Platform platform in mustPlatforms)
         {
             SetUpPlarform(platform);
         }
 
-        for (int i = 0; i < platforms.Count; i++)
+        if (notInInitialStages)
         {
-            if (Random.Range(0, spawnProbability) == Mathf.FloorToInt(spawnProbability / 2))
-                SetUpObstacle(platforms[i], Random.Range(0, 2) == 0);
-            else
-                SetUpPlarform(platforms[i]);
-        }
+            for (int i = 0; i < platforms.Count; i++)
+            {
+                if (Random.Range(0, spawnProbability) == Mathf.FloorToInt(spawnProbability / 2))
+                    SetUpObstacle(platforms[i], Random.Range(0, 2) == 0);
+                else
+                    SetUpPlarform(platforms[i]);
+            }
 
-        SpawnPatchFlyingObstacle();
+            SpawnPatchFlyingObstacle();
+        }
     }
 
     private void SetUpObstacle(Platform platform, bool _spawnGroundObstacle)
     {
-        if (!canSpawnEnemies)
-            return;
-
         SetUpPlarform(platform, false);
         platforms[platforms.Count - 1].Obstacle = Element.CONTAIN;
         platforms[platforms.Count - 1].Coins = Element.CONTAIN;
@@ -126,14 +162,14 @@ public class EnvironmentPatch : MonoBehaviour
         else
         {
             platform.State = PlatformType.DOUBLE;
-            if(Random.Range(0, 2) == 0)
+            if (Random.Range(0, 2) == 0)
             {
                 platform.Coins = Element.CONTAIN;
-                if (canSpawnEnemies && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
+                if (notInInitialStages && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
             }
             else
             {
-                if (canSpawnEnemies && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
+                if (notInInitialStages && Random.Range(0, 2) == 0) { platform.Obstacle = Element.CONTAIN; }
                 platform.Coins = Element.CONTAIN;
             }
         }
@@ -152,43 +188,47 @@ public class EnvironmentPatch : MonoBehaviour
 
     private void SetNewFlyingObstacle(Vector3 leftPos, Vector3 rightPos)
     {
-        StartCoroutine(StartFlying());
-        IEnumerator StartFlying()
+        float speed = Random.Range(flyingObstacleMoveSpeed / 2, flyingObstacleMoveSpeed);
+        string reandomObstacle = flyingObstacleNames[Random.Range(0, flyingObstacleNames.Count)];
+        Transform obstacle = PoolManager.Instance.GetFromPool(reandomObstacle).transform;
+        flyingObstacles.Add(new PoolObj(reandomObstacle, obstacle.gameObject));
+
+        // Randomly Selecting Target Positions
+        if (Random.Range(0, 2) == 1)
+            FlyToLeft();
+        else
+            FlyToRight();
+
+        void FlyToLeft()
         {
-            string reandomObstacle = flyingObstacleNames[Random.Range(0, flyingObstacleNames.Count)];
-            Transform obstacle = PoolManager.Instance.GetFromPool(reandomObstacle).transform;
-            flyingObstacles.Add(new PoolObj(reandomObstacle, obstacle.gameObject));
-            
-            float rotation = -180f;
-            Vector3 swapVar = Vector3.zero;
-
-            // Randomly Selecting Target Positions
-            if (Random.Range(0, 2) == 1)
-            {
-                swapVar = leftPos;
-                leftPos = rightPos;
-                rightPos = swapVar;
-
-                rotation *= -1f;
-                obstacle.transform.eulerAngles += new Vector3(0, rotation, 0);
-            }
-
-            while (true)
-            {
-                // Moving Towards Target Positions
-                obstacle.transform.position = leftPos;
-                yield return obstacle.DOMove(rightPos, flyingObstacleMoveSpeed).WaitForCompletion();
-
-                // Changing Rotation Of Obstacle
-                rotation *= -1f;
-                obstacle.transform.eulerAngles += new Vector3(0, rotation, 0);
-
-                // Sawping Target Positions
-                swapVar = leftPos;
-                leftPos = rightPos;
-                rightPos = swapVar;
-            }
+            obstacle.transform.position = rightPos;
+            obstacle.transform.eulerAngles = new Vector3(0, 180f, 0);
+            obstacle.DOMove(leftPos, speed).OnComplete(FlyToRight);
         }
+
+        void FlyToRight()
+        {
+            obstacle.transform.position = leftPos;
+            obstacle.transform.eulerAngles = new Vector3(0, 0, 0);
+            obstacle.DOMove(rightPos, speed).OnComplete(FlyToLeft);
+        }
+    }
+
+    #endregion
+
+    #region Utilities
+
+    private void SetCoinOrObstacle(Platform platform)
+    {
+        if (Random.Range(0, 2) == 0)
+            platform.Obstacle = Element.CONTAIN;
+        else
+            platform.Coins = Element.CONTAIN;
+    }
+
+    private PlatformType GetRandomPlatformType()
+    {
+        return Random.Range(0, 2) == 1 ? PlatformType.SINGLE : PlatformType.DOUBLE;
     }
 
     #endregion
@@ -201,4 +241,10 @@ public struct FlyingObstacle
     public Transform leftSide;
     public Transform rightSide;
     public int criteriaScores;
+}
+
+public enum PowerUp
+{
+    EXTRA_LIFE,
+    JUMP_BOOST
 }
