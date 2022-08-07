@@ -21,6 +21,11 @@ public class BirdCoillder : MonoBehaviour
         if (collision.CompareTag("Flying Obstacle"))
         {
             playerDead = controller.Dead();
+            if (!playerDead)
+            {
+                VFXManager.Instance.DisplayVFX("Enemy Die Effect", collision.transform.position);
+                collision.gameObject.SetActive(false);
+            }
         }
     }
 

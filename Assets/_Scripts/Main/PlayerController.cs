@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     public float jumpHieght;
     public float boostJumpHieght;
     public float groundDistance;
-    public float yDirectionMax;
     public SpriteRenderer playerBody;
     public Animator playerAnimator;
     public Transform groundCheck;
@@ -34,11 +33,10 @@ public class PlayerController : MonoBehaviour
 
     #region Private Attributes
 
-    private bool isGameStarted;
-    private bool isOnGround;
-    private bool isFalling;
     private bool isDead;
-    private float currentMaxY;
+    private bool isFalling;
+    private bool isOnGround;
+    private bool isGameStarted;
     private float newYJumpPos;
     private UIManager uiManager;
     private EnvironmentManager environmentManager;
@@ -58,8 +56,7 @@ public class PlayerController : MonoBehaviour
         playerInfo = _playerInfo;
         uiManager = _uiManager;
         environmentManager = _environmentManager;
-
-        currentMaxY = yDirectionMax;
+        
         newYJumpPos = transform.position.y;
         playerBody.sprite = playerInfo.jumpSprite;
         moveButtonLeft.OnPressed = HorizontalMove;
@@ -210,14 +207,18 @@ public class PlayerController : MonoBehaviour
                 AudioController.Instance.PlayAudio(AudioName.PICKUP_COLLECT);
             }
 
+            if (collision.CompareTag("Ground Obstacle"))
+            {
+                if(!Dead())
+                {
+                    VFXManager.Instance.DisplayVFX("Enemy Die Effect", collision.transform.position);
+                    collision.gameObject.SetActive(false);
+                }
+            }
+
             if (collision.CompareTag("Boost Jump"))
             {
                 BoostJump();
-            }
-
-            if (collision.CompareTag("Ground Obstacle"))
-            {
-                Dead();
             }
 
             if (collision.CompareTag("Dead End"))

@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        ResetGame();
         gameData.CheckGameUnlockedElements();
         gameData.gameEarnedScores = DataController.Instance.Scores;
 
@@ -34,13 +35,22 @@ public class GameManager : MonoBehaviour
         //gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
 
         // Initializing Main Scripts
-        gameplayUiManager.Init(playerController, gameData, this);
+        gameplayUiManager.Init(gameData, this);
+    }
+
+    private void ResetGame()
+    {
+        if(gameData.resetGame)
+        {
+            DataController.Instance.Scores = 0;
+            gameData.gameInitialized = false;
+        }
     }
 
     public void StartGame()
     {
         AudioController.Instance.PlayAudio(AudioName.BACKGROUND);
-        environmentManager.Init(gameData.selectedStage, gameplayUiManager, gameData);
+        environmentManager.Init(gameData.selectedStage, gameplayUiManager, playerController, gameData);
         playerController.Init(gameData.selectedCharacter, gameplayUiManager, environmentManager);
     } 
 

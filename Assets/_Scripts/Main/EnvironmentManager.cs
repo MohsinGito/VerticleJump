@@ -9,9 +9,9 @@ public class EnvironmentManager : MonoBehaviour
     #region Public Attributes
 
     public int startingPatch;
-    public float respositionSpeed;
-    public float envRepositionY;
     public float newEnvSpawnYPos;
+    public float repositionSpeed;
+    public float evnRepositionStartY;
     public Transform repositionEnv;
     public SpriteRenderer ground;
     public SpriteRenderer leftBg;
@@ -22,33 +22,31 @@ public class EnvironmentManager : MonoBehaviour
     #region Private Attributes
 
     private bool isFirstPatch;
-    private float currentPlayerMaxY;
     private float currentRepositionYPos;
     private Transform playerTransform;
     private GameStage currentStageInfo;
-    private Vector3 nextPositionForRepositioning;
 
     private GameData gameData;
     private UIManager uiManager;
+    private PlayerController playerController;
     private List<EnvironmentPatch> environmentPatches;
 
     #endregion
 
     #region Public Methods
 
-    public void Init(GameStage _stageInfo, UIManager _uiManager, GameData _gameData)
+    public void Init(GameStage _stageInfo, UIManager _uiManager, PlayerController _playerController, GameData _gameData)
     {
         gameData = _gameData;
-        uiManager = _uiManager; 
+        uiManager = _uiManager;
         currentStageInfo = _stageInfo;
+        playerController = _playerController;
         ground.sprite = _stageInfo.groundSprite;
         leftBg.color = _stageInfo.backgroundColor;
         rightBg.color = _stageInfo.backgroundColor;
-        currentPlayerMaxY = envRepositionY;
+        playerTransform = _playerController.transform;
         currentRepositionYPos = newEnvSpawnYPos;
-        nextPositionForRepositioning = Vector3.zero;
         environmentPatches = new List<EnvironmentPatch>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         isFirstPatch = true;
         leftBg.gameObject.SetActive(true);
@@ -100,20 +98,23 @@ public class EnvironmentManager : MonoBehaviour
                     currentRepositionYPos = playerTransform.position.y + newEnvSpawnYPos;
                 }
 
-                if (playerTransform.position.y > currentPlayerMaxY)
-                {
-                    uiManager.AddRewardScores();
-                    currentPlayerMaxY += envRepositionY;
-                    nextPositionForRepositioning += transform.position + new Vector3(0, envRepositionY);
-                }
-                else
-                {
-                    repositionEnv.DOMove(nextPositionForRepositioning, respositionSpeed / 100);
-                }
-
+                RepositionEnvironment();
                 yield return new WaitForFixedUpdate();
             }
         }
+    }
+
+    private void RepositionEnvironment()
+    {
+        if(playerTransform.position.y > evnRepositionStartY)
+        {
+            if (!playerController.isInJumpBoost)
+                uiManager.AddRewardScores();
+            evnRepositionStartY = playerTransform.position.y;
+        }
+
+        if(repositionEnv.position.y != evnRepositionStartY)
+            repositionEnv.DOMove(new Vector3(0, evnRepositionStartY, 0), repositionSpeed / 100);
     }
 
     private void RemoveAndAddNewPatch()

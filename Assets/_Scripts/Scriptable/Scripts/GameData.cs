@@ -8,7 +8,7 @@ public class GameData : ScriptableObject
     #region Main Attributes
 
     public bool testBuild;
-    public bool restartGame;
+    public bool resetGame;
 
     [Header("-- In Game Data --")]
     public int scoresBoost;
@@ -28,6 +28,8 @@ public class GameData : ScriptableObject
     public bool sfxOn;
     public bool musicOn;
     public bool gameInitialized;
+
+    [HideInInspector] public bool restartGame;
 
     #endregion
 

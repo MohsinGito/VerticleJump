@@ -77,7 +77,7 @@ public class GameplayUIScreen : MonoBehaviour
                     scoresLeftToAdd -= 1;
                     scoresText.text = currentScores.ToString();
                 }
-                yield return new WaitForSeconds(0.02f);  
+                yield return new WaitForSeconds(0.01f);  
             }
         }
     }

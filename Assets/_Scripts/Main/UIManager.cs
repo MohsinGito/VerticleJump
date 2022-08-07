@@ -20,17 +20,18 @@ public class UIManager : MonoBehaviour
     private int livesLeft;
     private GameData gameData;
     private GameManager gameManager;
-    private PlayerController playerController;
 
     #endregion
 
     #region Public Methods
 
-    public void Init(PlayerController _playerController, GameData _gameData, GameManager _gameManager)
+    public void Init(GameData _gameData, GameManager _gameManager)
     {
         gameData = _gameData;
         gameManager = _gameManager;
-        playerController = _playerController;
+
+        livesLeft = 1;
+        gameplayUiScreen.UpdateLivesUI(livesLeft);
 
         if (gameData.restartGame)
         {
@@ -62,16 +63,10 @@ public class UIManager : MonoBehaviour
 
             }, gameData);
         }
-
-        livesLeft = 1;
-        gameplayUiScreen.UpdateLivesUI(livesLeft);
     }
 
     public void AddRewardScores(bool _coinReward = false)
     {
-        if (playerController.isInJumpBoost)
-            return;
-
         if (_coinReward)
             gameplayUiScreen.IncrementCoinScores();
         else
@@ -86,18 +81,9 @@ public class UIManager : MonoBehaviour
 
     public bool AllLivesEnded(bool _collidedWithDeadEnd)
     {
-        if (_collidedWithDeadEnd)
-            livesLeft = 0;
-        else
-            livesLeft -= 1;
-
-        if(livesLeft <= 0)
-        {
-            gameplayUiScreen.UpdateLivesUI(0);
-            return true;
-        }
+        livesLeft = _collidedWithDeadEnd ? 0 : livesLeft - 1;
         gameplayUiScreen.UpdateLivesUI(livesLeft);
-        return false;
+        return livesLeft == 0;
     }
 
     public void StartGame()
