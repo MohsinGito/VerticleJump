@@ -1,4 +1,5 @@
 using System.Collections;
+using RestManager;
 using UnityEngine;
 using Utilities.Audio;
 using Utilities.Data;
@@ -21,8 +22,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         ResetGame();
-        gameData.CheckGameUnlockedElements();
-        gameData.gameEarnedScores = DataController.Instance.Scores;
 
         // Setting Up Game Volume First
         if (!gameData.gameInitialized)
@@ -30,9 +29,6 @@ public class GameManager : MonoBehaviour
             DataController.Instance.Sfx = 1;
             DataController.Instance.Music = 1;
         }
-
-        //gameData.sfxOn = DataController.Instance.Sfx == 1 ? true : false;
-        //gameData.musicOn = DataController.Instance.Music == 1 ? true : false;
 
         // Initializing Main Scripts
         gameplayUiManager.Init(gameData, this);
@@ -42,9 +38,15 @@ public class GameManager : MonoBehaviour
     {
         if(gameData.resetGame)
         {
+            gameData.gameEarnedScores = 0;
             DataController.Instance.Scores = 0;
             gameData.gameInitialized = false;
         }
+        else
+        {
+            gameData.gameEarnedScores = DataController.Instance.Scores;
+        }
+        gameData.CheckGameUnlockedElements();
     }
 
     public void StartGame()
@@ -56,6 +58,9 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
+        GameServer.Instance.InitializeAdd(1);
+        GameServer.Instance.SendScoresInfo(gameData.sessionScores);
+
         gameData.gameEarnedScores += gameData.sessionScores;
         DataController.Instance.Scores = gameData.gameEarnedScores;
     }
