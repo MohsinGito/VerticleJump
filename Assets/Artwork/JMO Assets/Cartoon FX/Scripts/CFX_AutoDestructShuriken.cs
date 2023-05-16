@@ -12,8 +12,6 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
 {
 	// If true, deactivate the object instead of destroying it
 	public bool OnlyDeactivate;
-	public bool ForceFullyDeactivate;
-	public float DeactivateTime;
 	
 	void OnEnable()
 	{
@@ -26,15 +24,7 @@ public class CFX_AutoDestructShuriken : MonoBehaviour
 		
 		while(true && ps != null)
 		{
-			if (ForceFullyDeactivate)
-            {
-				yield return new WaitForSeconds(DeactivateTime);
-				this.gameObject.SetActive(false);
-				break;
-			}
-
 			yield return new WaitForSeconds(0.5f);
-
 			if(!ps.IsAlive(true))
 			{
 				if(OnlyDeactivate)

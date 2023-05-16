@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities.Audio;
 
 public class BirdCoillder : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class BirdCoillder : MonoBehaviour
             if (!playerDead)
             {
                 VFXManager.Instance.DisplayVFX("Enemy Die Effect", collision.transform.position);
-                collision.gameObject.SetActive(false);
+                collision.gameObject.SetActive(false); AudioController.Instance.PlayAudio(AudioName.Enemy_Hit);
             }
         }
     }

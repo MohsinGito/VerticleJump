@@ -18,7 +18,6 @@ public class GameplayUIScreen : MonoBehaviour
     #region Private Attributes
 
     private int currentScores;
-    private int scoresLeftToAdd;
     private GameData gameData;
     private GameplayPopupsManager popupsManager;
 
@@ -51,13 +50,12 @@ public class GameplayUIScreen : MonoBehaviour
 
     public void IncrementBoostScores()
     {
-        scoresLeftToAdd += gameData.scoresBoost;
         gameData.sessionScores += gameData.scoresBoost;
     }
 
     public void IncrementCoinScores()
     {
-        scoresLeftToAdd += gameData.coinsScores;
+        gameData.sessionScores += gameData.coinsScores;
     }
 
     public void UpdateLivesUI(int lives)
@@ -72,10 +70,9 @@ public class GameplayUIScreen : MonoBehaviour
         {
             while(true)
             {
-                if(scoresLeftToAdd > 0)
+                if(currentScores < gameData.sessionScores)
                 {
                     currentScores += 1;
-                    scoresLeftToAdd -= 1;
                     scoresText.text = currentScores.ToString();
                 }
                 yield return new WaitForSeconds(0.01f);  

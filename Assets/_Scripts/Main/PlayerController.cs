@@ -129,6 +129,7 @@ public class PlayerController : MonoBehaviour
         newYJumpPos = transform.position.y;
         playerAnimator.SetTrigger("Jump");
         playerRb.velocity = new Vector2(0, (Vector2.up * jumpHieght).y);
+        VFXManager.Instance.DisplayVFX("Normal Jump Effect", transform.position);
         AudioController.Instance.PlayAudio(AudioName.JUMP);
     }
 
@@ -213,6 +214,7 @@ public class PlayerController : MonoBehaviour
                 {
                     VFXManager.Instance.DisplayVFX("Enemy Die Effect", collision.transform.position);
                     collision.gameObject.SetActive(false);
+                    AudioController.Instance.PlayAudio(AudioName.Enemy_Hit);
                 }
             }
 

@@ -13,7 +13,8 @@
             COIN_COLLECT,
             BOOST_JUMP,
             PICKUP_COLLECT,
-            EXTRA_LIFE
+            EXTRA_LIFE,
+            Enemy_Hit
         }
     }
 }
