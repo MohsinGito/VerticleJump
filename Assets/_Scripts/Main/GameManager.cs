@@ -1,5 +1,3 @@
-using System.Collections;
-using RestManager;
 using UnityEngine;
 using Utilities.Audio;
 using Utilities.Data;
@@ -58,11 +56,10 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        GameServer.Instance.InitializeAdd(1);
-        GameServer.Instance.SendScoresInfo(gameData.sessionScores);
-
         gameData.gameEarnedScores += gameData.sessionScores;
         DataController.Instance.Scores = gameData.gameEarnedScores;
+
+        PlayerPrefs.SetInt("Scores", gameData.gameEarnedScores);
     }
 
     #endregion

@@ -17,7 +17,7 @@ MonoBehaviour:
   scoresBoost: 1
   coinsScores: 5
   sessionScores: 0
-  gameEarnedScores: 0
+  gameEarnedScores: 262
   gameStages:
   - stageName: Level 1
     platform: {fileID: 21300000, guid: e7c353da85a434e8e9443778558245a6, type: 3}
@@ -203,5 +203,5 @@ MonoBehaviour:
     scoresCriteria: 0
   sfxOn: 1
   musicOn: 1
-  gameInitialized: 0
+  gameInitialized: 1
   restartGame: 0

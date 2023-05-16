@@ -32,6 +32,7 @@ public class GameplayUIScreen : MonoBehaviour
         popupsManager = _popupsManager;
 
         gameData.sessionScores = 0;
+        gameData.gameEarnedScores = PlayerPrefs.GetInt("Scores");
         scoresText.text = gameData.sessionScores.ToString();
         pauseButton.onClick.AddListener(popupsManager.ShowPauseScreen);
 
